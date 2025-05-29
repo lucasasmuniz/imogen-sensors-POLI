@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = "sensor")
+@ToString(exclude = "sensors")
 @EqualsAndHashCode(of = "id")
 public class Station {
 
