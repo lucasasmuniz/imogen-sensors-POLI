@@ -11,7 +11,6 @@ import java.util.Set;
 @Table(name = "lot")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(of = "id")
@@ -24,4 +23,9 @@ public class Lot {
 
     @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Sensor> sensors = new HashSet<>();
+
+    public Lot(String id, Instant timestamp) {
+        this.id = id;
+        this.timestamp = timestamp;
+    }
 }

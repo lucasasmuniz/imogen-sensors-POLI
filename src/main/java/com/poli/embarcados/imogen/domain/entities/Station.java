@@ -11,7 +11,6 @@ import java.util.Set;
 @Table(name = "station")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "sensor")
 @EqualsAndHashCode(of = "id")
@@ -34,4 +33,11 @@ public class Station {
     @OneToMany(mappedBy = "station", fetch = FetchType.LAZY)
     private Set<Sensor> sensors = new HashSet<>();
 
+    public Station(String id, String name, BigDecimal latitude, BigDecimal longitude, BigDecimal elevationM) {
+        this.id = id;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.elevationM = elevationM;
+    }
 }

@@ -1,7 +1,10 @@
 package com.poli.embarcados.imogen.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -9,10 +12,8 @@ import java.math.BigDecimal;
 @Table(name = "sensor")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id")
 public class Sensor {
 
     @Id
@@ -27,9 +28,19 @@ public class Sensor {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
+    @ToString.Exclude
     private Station station;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lot_id", nullable = false)
+    @ToString.Exclude
     private Lot lot;
+
+
+    public Sensor(String id, String type, String unit, BigDecimal value) {
+        this.id = id;
+        this.type = type;
+        this.unit = unit;
+        this.value = value;
+    }
 }
