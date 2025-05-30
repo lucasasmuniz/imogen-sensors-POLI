@@ -5,17 +5,17 @@ import com.poli.embarcados.imogen.domain.entities.Station;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public record LotDTO(String id, Instant timestamp, Set<StationDTO> stations) {
+public record LotDTO(String id, Instant timestamp, List<StationDTO> stations) {
     public LotDTO(Lot entity){
-        this(entity.getId(), entity.getTimestamp(), Collections.emptySet());
+        this(entity.getId(), entity.getTimestamp(), Collections.emptyList());
     }
 
     public LotDTO(Lot entity, Set<Station> stations){
         this(entity.getId(),
                 entity.getTimestamp(),
-                stations.stream().map(x -> new StationDTO(x, x.getSensors())).collect(Collectors.toSet()));
+                stations.stream().map(x -> new StationDTO(x, x.getSensors())).toList());
     }
 }

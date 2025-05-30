@@ -5,9 +5,9 @@ import com.poli.embarcados.imogen.domain.entities.Station;
 import com.poli.embarcados.imogen.repositories.StationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -16,9 +16,10 @@ public class StationService {
     private final StationRepository repository;
 
     public List<StationDTO> findAll(){
-        return repository.findAll().stream().map(StationDTO::new).collect(Collectors.toList());
+        return repository.findAll().stream().map(StationDTO::new).toList();
     }
 
+    @Transactional
     public StationDTO insert(StationDTO dto){
         Station entity = new Station();
         entity.setName(dto.name());
