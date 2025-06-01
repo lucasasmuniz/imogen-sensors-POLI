@@ -6,6 +6,7 @@ import com.poli.embarcados.imogen.domain.dtos.StationDTO;
 import com.poli.embarcados.imogen.domain.entities.Lot;
 import com.poli.embarcados.imogen.domain.entities.Sensor;
 import com.poli.embarcados.imogen.domain.entities.Station;
+import com.poli.embarcados.imogen.projections.StationProjection;
 import com.poli.embarcados.imogen.repositories.LotRepository;
 import com.poli.embarcados.imogen.repositories.SensorRepository;
 import com.poli.embarcados.imogen.repositories.StationRepository;
@@ -25,17 +26,27 @@ public class LotService {
     private final SensorRepository sensorRepository;
 
     @Transactional
-    public void insert(LotDTO dto) {
+    public LotDTO insert(LotDTO dto) {
         Lot lotEntity = new Lot();
         lotEntity.setTimestamp(dto.timestamp());
         lotEntity = repository.save(lotEntity);
 
         Map<String, Station> stationEntityMap = processAndGetStationMap(dto.stations());
+        Map<String, List<Sensor>> sensorEntityMap = new HashMap<>();
 
-        List<Sensor> sensorsToSave = createSensorEntitiesFromDTOs(dto.stations(), stationEntityMap, lotEntity);
+        List<Sensor> sensorsToSave = createSensorEntitiesFromDTOs(dto.stations(), stationEntityMap, sensorEntityMap, lotEntity);
         if (!sensorsToSave.isEmpty()) {
             sensorRepository.saveAll(sensorsToSave);
         }
+
+        Set<Station> stationSetReturn = new HashSet<>();
+        stationEntityMap.forEach((key, stationValue) -> {
+            stationValue.getSensors().clear();
+            stationValue.getSensors().addAll(sensorEntityMap.get(key));
+            stationSetReturn.add(stationValue);
+        });
+
+        return new LotDTO(lotEntity, stationSetReturn);
     }
 
     private Map<String, Station> processAndGetStationMap(List<StationDTO> stationDTOs) {
@@ -63,19 +74,30 @@ public class LotService {
         return stationMap;
     }
 
-    public List<Sensor> createSensorEntitiesFromDTOs(List<StationDTO> stationDtoList, Map<String, Station> stationEntityMap, Lot lotEntity){
-        List<Sensor> list = new ArrayList<>();
+    public List<Sensor> createSensorEntitiesFromDTOs(List<StationDTO> stationDtoList,
+                                                     Map<String, Station> stationEntityMap,
+                                                     Map<String, List<Sensor>> sensorEntityMap,
+                                                     Lot lotEntity){
+        List<Sensor> result = new ArrayList<>();
+
         for(StationDTO stationDto : stationDtoList){
+            List<Sensor> sensorPerStation = new ArrayList<>();
             Station currentStationEntity = stationEntityMap.get(stationDto.name());
+
             if (currentStationEntity != null && stationDto.sensors() != null) {
                 for(SensorDTO sensorDto : stationDto.sensors()) {
-                    list.add(copySensorDtoToEntity(sensorDto, currentStationEntity, lotEntity));
+                    Sensor sensor = copySensorDtoToEntity(sensorDto, currentStationEntity, lotEntity);
+                    sensorPerStation.add(sensor);
+                    result.add(sensor);
                 }
+                sensorEntityMap.put(currentStationEntity.getName(), sensorPerStation);
+
             } else {
                 // Need to throw something, provavelmente um badrequest
+                throw new RuntimeException("Erro");
             }
         }
-        return list;
+        return result;
     }
 
     public Station copyStationDtoToEntity(StationDTO dto){
@@ -95,5 +117,20 @@ public class LotService {
         entity.setStation(stationEntity); // Usa a entidade Station já carregada/criada
         entity.setLot(lotEntity);       // Usa a entidade Lot já carregada/criada
         return entity;
+    }
+
+    @Transactional(readOnly = true)
+    public List<LotDTO> findALl() {
+        return repository.findAll().stream().map(LotDTO::new).toList();
+    }
+
+    public LotDTO findById(String id) {
+        Lot lot = repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        List<StationProjection> stations = stationRepository.searchByLotId(id);
+        List<String> list = stations.stream().map(StationProjection::getId).toList();
+        List<Station> stationEntities = stationRepository.searchByIdInList(list);
+
+
+        return new LotDTO(lot, new HashSet<>(stationEntities));
     }
 }

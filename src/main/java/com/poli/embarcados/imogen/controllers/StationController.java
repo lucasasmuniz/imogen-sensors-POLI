@@ -30,4 +30,8 @@ public class StationController {
         return ResponseEntity.created(uri).body(newDto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StationDTO> findById(@PathVariable String id){
+        return ResponseEntity.ok(service.findById(id));
+    }
 }
