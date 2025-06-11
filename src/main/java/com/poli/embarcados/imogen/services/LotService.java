@@ -11,9 +11,16 @@ import com.poli.embarcados.imogen.repositories.LotRepository;
 import com.poli.embarcados.imogen.repositories.SensorRepository;
 import com.poli.embarcados.imogen.repositories.StationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import specifications.LotSpecification;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -120,8 +127,13 @@ public class LotService {
     }
 
     @Transactional(readOnly = true)
-    public List<LotDTO> findALl() {
-        return repository.findAll().stream().map(LotDTO::new).toList();
+    public Page<LotDTO> findAllPaged(LocalDate startDate, LocalDate endDate,Pageable pageable) {
+        Instant startDateInstant = startDate == null ? null : startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Instant endDateInstant = endDate == null ? null : endDate.plusDays(1L).atStartOfDay().toInstant(ZoneOffset.UTC);
+
+        Specification<Lot> spec = LotSpecification.filterLotByDataRange(startDateInstant, endDateInstant);
+
+        return repository.findAll(spec, pageable).map(LotDTO::new);
     }
 
     public LotDTO findById(String id) {

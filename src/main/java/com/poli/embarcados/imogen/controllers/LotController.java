@@ -3,12 +3,15 @@ package com.poli.embarcados.imogen.controllers;
 import com.poli.embarcados.imogen.domain.dtos.LotDTO;
 import com.poli.embarcados.imogen.services.LotService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/lots")
@@ -24,9 +27,12 @@ public class LotController {
         return ResponseEntity.created(uri).body(newDTO);
     }
 
+    // tratar exceção de data inválida MethodArgumentTypeMismatchException
     @GetMapping
-    public ResponseEntity<List<LotDTO>> findAll(){
-        return ResponseEntity.ok(service.findALl());
+    public ResponseEntity<Page<LotDTO>> findAllPaged(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                     @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                     Pageable pageable){
+        return ResponseEntity.ok(service.findAllPaged(startDate, endDate, pageable));
     }
 
     @GetMapping("/{id}")
