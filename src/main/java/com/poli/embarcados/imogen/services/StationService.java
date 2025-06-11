@@ -3,6 +3,7 @@ package com.poli.embarcados.imogen.services;
 import com.poli.embarcados.imogen.domain.dtos.StationDTO;
 import com.poli.embarcados.imogen.domain.entities.Station;
 import com.poli.embarcados.imogen.repositories.StationRepository;
+import com.poli.embarcados.imogen.services.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,6 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationDTO findById(String id) {
-        return new StationDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("Erro")));
+        return new StationDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Erro")));
     }
 }

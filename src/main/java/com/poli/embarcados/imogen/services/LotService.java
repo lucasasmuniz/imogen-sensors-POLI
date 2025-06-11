@@ -10,6 +10,8 @@ import com.poli.embarcados.imogen.projections.StationProjection;
 import com.poli.embarcados.imogen.repositories.LotRepository;
 import com.poli.embarcados.imogen.repositories.SensorRepository;
 import com.poli.embarcados.imogen.repositories.StationRepository;
+import com.poli.embarcados.imogen.services.exceptions.InvalidDataException;
+import com.poli.embarcados.imogen.services.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,10 @@ public class LotService {
 
     @Transactional
     public LotDTO insert(LotDTO dto) {
+        if (dto.stations() == null || dto.stations().isEmpty()){
+            throw new InvalidDataException("No stations provided");
+        }
+
         Lot lotEntity = new Lot();
         lotEntity.setTimestamp(dto.timestamp());
         lotEntity = repository.save(lotEntity);
@@ -91,17 +97,13 @@ public class LotService {
             List<Sensor> sensorPerStation = new ArrayList<>();
             Station currentStationEntity = stationEntityMap.get(stationDto.name());
 
-            if (currentStationEntity != null && stationDto.sensors() != null) {
+            if (currentStationEntity != null) {
                 for(SensorDTO sensorDto : stationDto.sensors()) {
                     Sensor sensor = copySensorDtoToEntity(sensorDto, currentStationEntity, lotEntity);
                     sensorPerStation.add(sensor);
                     result.add(sensor);
                 }
                 sensorEntityMap.put(currentStationEntity.getName(), sensorPerStation);
-
-            } else {
-                // Need to throw something, provavelmente um badrequest
-                throw new RuntimeException("Erro");
             }
         }
         return result;
@@ -137,7 +139,7 @@ public class LotService {
     }
 
     public LotDTO findById(String id) {
-        Lot lot = repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        Lot lot = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
         List<StationProjection> stations = stationRepository.searchByLotId(id);
         List<String> list = stations.stream().map(StationProjection::getId).toList();
         List<Station> stationEntities = stationRepository.searchByIdInList(list);
