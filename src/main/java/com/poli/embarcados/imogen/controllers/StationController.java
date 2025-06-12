@@ -2,6 +2,7 @@ package com.poli.embarcados.imogen.controllers;
 
 import com.poli.embarcados.imogen.domain.dtos.StationDTO;
 import com.poli.embarcados.imogen.services.StationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class StationController {
     }
 
     @PostMapping()
-    public ResponseEntity<StationDTO> insert(@RequestBody StationDTO dto){
+    public ResponseEntity<StationDTO> insert(@Valid @RequestBody StationDTO dto){
         StationDTO newDto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(newDto.id()).toUri();

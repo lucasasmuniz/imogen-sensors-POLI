@@ -36,6 +36,11 @@ public class LotService {
 
     @Transactional
     public LotDTO insert(LotDTO dto) {
+        dto.stations().forEach(stationDTO -> {
+            if(stationDTO.sensors() == null){
+                throw new InvalidDataException("Station " + stationDTO.name() + " must have at least one sensor");
+            }
+        });
         if (dto.stations() == null || dto.stations().isEmpty()){
             throw new InvalidDataException("No stations provided");
         }

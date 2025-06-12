@@ -3,6 +3,7 @@ package com.poli.embarcados.imogen.services;
 import com.poli.embarcados.imogen.domain.dtos.StationDTO;
 import com.poli.embarcados.imogen.domain.entities.Station;
 import com.poli.embarcados.imogen.repositories.StationRepository;
+import com.poli.embarcados.imogen.services.exceptions.ExistingDataException;
 import com.poli.embarcados.imogen.services.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class StationService {
 
     @Transactional
     public StationDTO insert(StationDTO dto){
+        if(repository.findByName(dto.name()) != null){
+            throw new ExistingDataException("Station with name " + dto.name() + " already exists");
+        }
+
         Station entity = new Station();
         entity.setName(dto.name());
         entity.setLatitude(dto.latitude());

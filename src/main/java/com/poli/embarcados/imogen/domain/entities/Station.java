@@ -23,11 +23,11 @@ public class Station {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(precision = 9, scale = 4, nullable = false)
+    @Column(precision = 9, scale = 4)
     private BigDecimal latitude;
-    @Column(precision = 9, scale = 4, nullable = false)
+    @Column(precision = 9, scale = 4)
     private BigDecimal longitude;
-    @Column(precision = 5, scale = 2, nullable = false)
+    @Column(precision = 5, scale = 2)
     private BigDecimal elevationM;
 
     @OneToMany(mappedBy = "station", fetch = FetchType.LAZY)
