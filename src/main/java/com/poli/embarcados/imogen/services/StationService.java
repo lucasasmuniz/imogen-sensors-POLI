@@ -34,6 +34,6 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public StationDTO findById(String id) {
-        return new StationDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Erro")));
+        return new StationDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Station with id " + id + " not found")));
     }
 }

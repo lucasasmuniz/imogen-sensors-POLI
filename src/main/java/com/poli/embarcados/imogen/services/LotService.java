@@ -139,7 +139,7 @@ public class LotService {
     }
 
     public LotDTO findById(String id) {
-        Lot lot = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+        Lot lot = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Lot with id " + id + " not found"));
         List<StationProjection> stations = stationRepository.searchByLotId(id);
         List<String> list = stations.stream().map(StationProjection::getId).toList();
         List<Station> stationEntities = stationRepository.searchByIdInList(list);
