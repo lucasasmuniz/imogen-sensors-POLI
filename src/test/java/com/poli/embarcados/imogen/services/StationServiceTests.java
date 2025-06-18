@@ -45,15 +45,15 @@ public class StationServiceTests {
         existingStationName = "STN001";
         nonExistingStationName = "STN002";
         station = Factory.createStation();
-        dto = Factory.createStationDTO();
+        dto = new StationDTO(station);
         dtoList = List.of(station);
 
         when(repository.findAll()).thenReturn(dtoList);
 
         when(repository.findById(existingId)).thenReturn(Optional.of(station));
         when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
-        when(repository.findByName(existingStationName)).thenThrow(ExistingDataException.class);
-        when(repository.findByName(nonExistingStationName)).thenReturn(station);
+        when(repository.findByName(existingStationName)).thenReturn(station);
+        when(repository.findByName(nonExistingStationName)).thenReturn(null);
 
         when(repository.save(any())).thenReturn(station);
     }
@@ -90,5 +90,28 @@ public class StationServiceTests {
         });
 
         verify(repository, times(1)).findById(nonExistingId);
+    }
+
+    @Test
+    void insertShouldInsertStationWhenNameDoesNotExist() {
+        station.setName(nonExistingStationName);
+        dto = new StationDTO(station);
+
+        StationDTO result = stationService.insert(dto);
+
+        assertNotNull(result);
+        assertEquals(dto.name(), result.name());
+        assertEquals(dto.latitude(), result.latitude());
+        assertEquals(dto.longitude(), result.longitude());
+        assertEquals(dto.elevationM(), result.elevationM());
+    }
+
+    @Test
+    void insertShouldThrowExistingDataExceptionWhenNameAlreadyExists() {
+        assertThrows(ExistingDataException.class, () -> {
+            stationService.insert(dto);
+        });
+
+        verify(repository, times(1)).findByName(existingStationName);
     }
 }
