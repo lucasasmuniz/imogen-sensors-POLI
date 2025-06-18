@@ -143,6 +143,7 @@ public class LotService {
         return repository.findAll(spec, pageable).map(LotDTO::new);
     }
 
+    @Transactional(readOnly = true)
     public LotDTO findById(String id) {
         Lot lot = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Lot with id " + id + " not found"));
         List<StationProjection> stations = stationRepository.searchByLotId(id);

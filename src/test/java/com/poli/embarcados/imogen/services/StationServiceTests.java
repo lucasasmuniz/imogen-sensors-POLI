@@ -30,10 +30,7 @@ public class StationServiceTests {
     @Mock
     private StationRepository repository;
 
-    private String existingId;
-    private String nonExistingId;
-    private String existingStationName;
-    private String nonExistingStationName;
+    private String existingId,nonExistingId,existingStationName,nonExistingStationName;
     private Station station;
     private StationDTO dto;
     private List<Station> dtoList;
