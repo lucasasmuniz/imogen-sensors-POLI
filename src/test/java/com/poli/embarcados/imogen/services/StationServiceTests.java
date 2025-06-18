@@ -4,6 +4,7 @@ import com.poli.embarcados.imogen.domain.dtos.StationDTO;
 import com.poli.embarcados.imogen.domain.entities.Station;
 import com.poli.embarcados.imogen.repositories.StationRepository;
 import com.poli.embarcados.imogen.services.exceptions.ExistingDataException;
+import com.poli.embarcados.imogen.services.exceptions.ResourceNotFoundException;
 import com.poli.embarcados.imogen.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 public class StationServiceTests {
@@ -68,5 +69,26 @@ public class StationServiceTests {
         assertEquals(station.getLatitude(), result.getFirst().latitude());
         assertEquals(station.getLongitude(), result.getFirst().longitude());
         assertEquals(station.getElevationM(), result.getFirst().elevationM());
+    }
+
+    @Test
+    void findByIdShouldReturnStationDTOWhenIdExists() {
+        StationDTO result = stationService.findById(existingId);
+
+        assertNotNull(result);
+        assertEquals(station.getId(), result.id());
+        assertEquals(station.getName(), result.name());
+        assertEquals(station.getLatitude(), result.latitude());
+        assertEquals(station.getLongitude(), result.longitude());
+        assertEquals(station.getElevationM(), result.elevationM());
+    }
+
+    @Test
+    void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+        assertThrows(ResourceNotFoundException.class, () -> {
+            stationService.findById(nonExistingId);
+        });
+
+        verify(repository, times(1)).findById(nonExistingId);
     }
 }
