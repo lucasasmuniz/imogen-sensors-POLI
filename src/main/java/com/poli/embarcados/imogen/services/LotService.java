@@ -149,6 +149,15 @@ public class LotService {
         List<StationProjection> stations = stationRepository.searchByLotId(id);
         List<String> list = stations.stream().map(StationProjection::getId).toList();
         List<Station> stationEntities = stationRepository.searchByIdInList(list);
+        stationEntities.forEach(station -> {
+            List<Sensor> filteredSensors = station.getSensors()
+                    .stream()
+                    .filter(sensor -> sensor.getLot().getId().equals(id))
+                    .toList(); // ou .collect(Collectors.toList()) em versões mais antigas do Java
+
+            // 3. Substitui a lista original de sensores pela lista filtrada
+            station.setSensors(new HashSet<>(filteredSensors));
+        });
 
 
         return new LotDTO(lot, new HashSet<>(stationEntities));
