@@ -296,7 +296,13 @@ OBS:
             "latitude": -9.1355,
             "longitude": -20.0234,
             "elevationM": 2.4,
-            "sensors": []
+            "sensors": [                
+                {
+                    "type": "pressure",
+                    "unit": "hPa",
+                    "value": 1013.2
+                }
+                ]
         },
         {
             "name": "STN0015",
@@ -323,35 +329,42 @@ OBS:
 **Resposta**
 ```json
 {
-    "id": "045cd285-9fca-4d2c-b2bb-9127155fd0cf",
+    "id": "3067c356-f92a-4631-a2d2-d025fa108308",
     "timestamp": "2025-06-02T14:30:00Z",
     "stations": [
         {
-            "id": "2bc6461d-d29b-4e4f-aa47-9b38021b44ae",
-            "name": "STN001",
-            "latitude": -9.1355,
-            "longitude": -20.0234,
-            "elevationM": 2.4,
-            "sensors": []
-        },
-        {
-            "id": "3231asvc134-fca-4d2c-b2bb-9127155fd0cf",
+            "id": "875984eb-509d-4081-b5d0-5bbfe8a526a8",
             "name": "STN0015",
             "latitude": -3.1355,
             "longitude": -60.0234,
-            "elevationM": 18.4,
+            "elevationM": 18.40,
             "sensors": [
                 {
-                    "id": "123vva198-fca-4d2c-b2bb-9127155fd0cf",
+                    "id": "e1f3f4ca-e388-4cec-967d-8dbe9195f49c",
                     "type": "river_level",
                     "unit": "m",
                     "value": 3.42
                 },
                 {
-                    "id": "12acjk1231-fca-4d2c-b2bb-9127155fd0cf",
+                    "id": "0acc36a7-8676-420e-8aa3-63353b0eb31a",
                     "type": "rainfall",
                     "unit": "mm",
                     "value": 2.8
+                }
+            ]
+        },
+        {
+            "id": "6d891f09-015f-4cd8-9647-ac288acc2ebe",
+            "name": "STN001",
+            "latitude": -9.1355,
+            "longitude": -20.0234,
+            "elevationM": 2.40,
+            "sensors": [
+                {
+                    "id": "451e6b6d-0c73-4a32-b6e0-cfe75d50eecd",
+                    "type": "pressure",
+                    "unit": "hPa",
+                    "value": 1013.2
                 }
             ]
         }
