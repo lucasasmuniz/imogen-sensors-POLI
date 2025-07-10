@@ -53,7 +53,7 @@ Para:
 ```yml
 services:
   app-service:
-    image: lucasmuniz/imogen-app:1.0 # Puxa a imagem pronta do Docker Hub
+    image: lucasmuniz/imogen-app:2.0 # Puxa a imagem pronta do Docker Hub
     # ... resto das configs
 ```
 
