@@ -63,6 +63,14 @@ E depois adicionar um `.env`(pode copiar o `.env.example` que deixei) e definir 
 POSTGRES_DB=nome_do_banco_aqui
 POSTGRES_USER=usuario_aqui
 POSTGRES_PASSWORD=sua_senha_aqui
+
+# URL JDBC da aplicação Spring (com o nome do container do PostgreSQL)
+SPRING_DATASOURCE_URL=jdbc:postgresql://pg-docker:5432/nome_do_postgres_db_aqui
+SPRING_DATASOURCE_USERNAME=nome_do_postgres_user_aqui
+SPRING_DATASOURCE_PASSWORD=senha_do_postgres_aqui
+
+#DDL_AUTO é usado para definir o comportamento do Hibernate em relação ao esquema do banco de dados.
+#No exemplo, 'update' significa que o Hibernate vai tentar atualizar o esquema do banco de dados sem apagar os dados existentes.
 SPRING_JPA_HIBERNATE_DDL_AUTO=update
 PGADMIN_PORT=5050
 ```
@@ -81,6 +89,14 @@ Ou seguir esses passos:
     POSTGRES_DB=nome_do_banco_aqui
     POSTGRES_USER=usuario_aqui
     POSTGRES_PASSWORD=sua_senha_aqui
+    
+    # URL JDBC da aplicação Spring (com o nome do container do PostgreSQL)
+    SPRING_DATASOURCE_URL=jdbc:postgresql://pg-docker:5432/nome_do_postgres_db_aqui
+    SPRING_DATASOURCE_USERNAME=nome_do_postgres_user_aqui
+    SPRING_DATASOURCE_PASSWORD=senha_do_postgres_aqui
+    
+    #DDL_AUTO é usado para definir o comportamento do Hibernate em relação ao esquema do banco de dados.
+    #No exemplo, 'update' significa que o Hibernate vai tentar atualizar o esquema do banco de dados sem apagar os dados existentes.
     SPRING_JPA_HIBERNATE_DDL_AUTO=update
     PGADMIN_PORT=5050
     ```
